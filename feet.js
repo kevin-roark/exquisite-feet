@@ -42,8 +42,8 @@ $(function() {
     clearFootZone();
     drawRandomImageInFootZone();
 
-    var minTime = 50;
-    var maxTime = 250;
+    var minTime = 20;
+    var maxTime = 140;
     var timeout = Math.floor(Math.random() * (maxTime - minTime)) + minTime;
     setTimeout(flashFeet, timeout);
   }
