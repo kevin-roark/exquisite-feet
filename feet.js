@@ -55,10 +55,21 @@ $(function() {
   var foot1 = movingFoot(feet[0]);
   var foot2 = movingFoot(feet[1]);
 
+  var sounds = [
+    'media/tap.mp3',
+    'media/slime.mp3'
+  ];
+
+  for (var i = 0; i < sounds.length; i++) {
+    sounds[i] = new Audio(sounds[i]);
+    sounds[i].loop = true;
+  }
+
   var canvas = document.querySelector('#corpse');
   var context = canvas.getContext('2d');
 
   flashFeet();
+  funkSounds();
 
   function flashFeet() {
     clearFootZone();
@@ -72,6 +83,30 @@ $(function() {
     var maxTime = 140;
     var timeout = Math.floor(Math.random() * (maxTime - minTime)) + minTime;
     setTimeout(flashFeet, timeout);
+  }
+
+  function funkSounds() {
+    sounds[0].play();
+
+    var timeout1 = Math.floor(Math.random() * (12000 - 3000)) + 3000;
+    setTimeout(function() {
+      sounds[0].volume = 0.4;
+      sounds[1].play();
+
+      var timeout2 = Math.floor(Math.random() * (13000 - 5000)) + 5000;
+      setTimeout(function() {
+        sounds[0].volume = 1.0;
+        sounds[0].pause();
+
+        var timeout3 = Math.floor(Math.random() * (8600 - 2000)) + 2000;
+        setTimeout(function() {
+          sounds[1].pause();
+
+          setTimeout(funkSounds, 1000);
+        }, timeout3);
+      }, timeout2);
+
+    }, timeout1);
   }
 
   function clearFootZone() {
