@@ -1,7 +1,7 @@
 $(function() {
   var TOTAL_HEIGHT = 760;
   var TOTAL_WIDTH = 600;
-  var FOOT_SIZE = 60;
+  var FOOT_SIZE = 66;
 
   var VERTICAL_SPACE = TOTAL_HEIGHT / 4; // 190
   var START_Y = VERTICAL_SPACE * 3;
@@ -34,22 +34,39 @@ $(function() {
     images[i].src = source;
   }
 
+  var feet = [
+    'foot.jpg',
+    'cleat.jpg',
+    'dirtyfoot.jpg',
+    'birkenstock.jpg',
+    'etnies.jpg',
+    'lebron.jpg',
+    'redfoot.jpg',
+    'yellowflop.jpg'
+  ];
+
+  for (var i = 0; i < feet.length; i++) {
+    var source = 'images/' + feet[i];
+
+    feet[i] = new Image(FOOT_SIZE, FOOT_SIZE);
+    feet[i].src = source;
+  }
+
+  var foot1 = movingFoot(feet[0]);
+  var foot2 = movingFoot(feet[1]);
+
   var canvas = document.querySelector('#corpse');
   var context = canvas.getContext('2d');
-
-  var humanFoot = movingFoot('images/foot.jpg');
-  var cleat = movingFoot('images/cleat.jpg');
 
   flashFeet();
 
   function flashFeet() {
     clearFootZone();
     drawRandomImageInFootZone();
-    drawFoot(humanFoot);
-    drawFoot(cleat);
+    drawTwoFeet();
 
-    moveFoot(humanFoot);
-    moveFoot(cleat);
+    moveFoot(foot1);
+    moveFoot(foot2);
 
     var minTime = 20;
     var maxTime = 140;
@@ -70,11 +87,10 @@ $(function() {
     return items[Math.floor(Math.random()*items.length)];
   }
 
-  function movingFoot(imageName) {
+  function movingFoot(image) {
     var foot = {};
 
-    foot.image = new Image(FOOT_SIZE, FOOT_SIZE);
-    foot.image.src = imageName;
+    foot.image = image;
 
     foot.x = xInBounds();
     foot.y = yInBounds();
@@ -95,7 +111,26 @@ $(function() {
     if (loopCount < 10) {
       foot.x = x;
       foot.y = y;
+    } else {
+      foot.x = TOTAL_WIDTH / 2;
+      foot.y = START_Y + (END_Y - START_Y) / 2;
     }
+  }
+
+  function drawTwoFeet() {
+
+    if (Math.random() > 0.94) {
+      foot1.image = choice(feet);
+    }
+
+    if (Math.random() > 0.94) {
+      do {
+        foot2.image = choice(feet);
+      } while (foot2.image.src == foot1.image.src);
+    }
+
+    drawFoot(foot1);
+    drawFoot(foot2);
   }
 
   function drawFoot(foot) {
@@ -114,11 +149,11 @@ $(function() {
   }
 
   function xInBounds() {
-    return Math.floor(Math.random() * TOTAL_WIDTH - FOOT_SIZE / 2);
+    return Math.floor(Math.random() * TOTAL_WIDTH - FOOT_SIZE * 2) + FOOT_SIZE;
   }
 
   function yInBounds() {
-    return Math.floor(Math.random() * VERTICAL_SPACE - FOOT_SIZE / 2) + START_Y;
+    return Math.floor(Math.random() * VERTICAL_SPACE - FOOT_SIZE * 2) + START_Y + FOOT_SIZE;
   }
 
   function randomPosisitionalDelta() {
@@ -134,7 +169,7 @@ $(function() {
   }
 
   function yIsValid(y) {
-    return (y >= START_Y && y <= END_Y);
+    return (y >= START_Y && y <= END_Y - FOOT_SIZE / 3);
   }
 
   function randomColor() {
