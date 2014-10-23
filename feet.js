@@ -65,6 +65,12 @@ $(function() {
     sounds[i].loop = true;
   }
 
+  var transfoot = new Image(TOTAL_WIDTH, VERTICAL_SPACE);
+  transfoot.src = 'images/bigfoot.png';
+
+  var opacity = 0.0;
+  var fadingIn = true;
+
   var canvas = document.querySelector('#corpse');
   var context = canvas.getContext('2d');
 
@@ -74,6 +80,7 @@ $(function() {
   function flashFeet() {
     clearFootZone();
     drawRandomImageInFootZone();
+    drawTransparentFoot();
     drawTwoFeet();
 
     moveFoot(foot1);
@@ -111,6 +118,29 @@ $(function() {
 
   function clearFootZone() {
     context.clearRect(0, START_Y, TOTAL_WIDTH, END_Y);
+  }
+
+  function drawTransparentFoot() {
+    var opdelta = Math.random() * 0.1;
+
+    if (fadingIn) {
+      opacity += opdelta;
+      if (opacity >= 1) {
+        fadingIn = false;
+      }
+    } else {
+      opacity -= opdelta;
+      if (opacity <= 0) {
+        fadingIn = true;
+      }
+    }
+
+    context.save();
+
+    context.globalAlpha = opacity;
+    context.drawImage(transfoot, 0, START_Y, TOTAL_WIDTH, VERTICAL_SPACE);
+
+    context.restore();
   }
 
   function drawRandomImageInFootZone() {
@@ -153,7 +183,6 @@ $(function() {
   }
 
   function drawTwoFeet() {
-
     if (Math.random() > 0.94) {
       foot1.image = choice(feet);
     }
