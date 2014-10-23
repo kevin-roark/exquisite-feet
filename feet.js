@@ -1,7 +1,7 @@
 $(function() {
   var TOTAL_HEIGHT = 760;
   var TOTAL_WIDTH = 600;
-  var FOOT_SIZE = 66;
+  var FOOT_SIZE = 75;
 
   var VERTICAL_SPACE = TOTAL_HEIGHT / 4; // 190
   var START_Y = VERTICAL_SPACE * 3;
@@ -159,6 +159,7 @@ $(function() {
 
     foot.x = xInBounds();
     foot.y = yInBounds();
+    foot.degrees = 0;
 
     return foot;
   }
@@ -180,6 +181,8 @@ $(function() {
       foot.x = TOTAL_WIDTH / 2;
       foot.y = START_Y + (END_Y - START_Y) / 2;
     }
+
+    foot.degrees += footDegreesDelta();
   }
 
   function drawTwoFeet() {
@@ -206,8 +209,15 @@ $(function() {
     context.shadowOffsetY = 4;
 
     var size = FOOT_SIZE + footSizeDelta();
+    var halfSize = size / 2;
 
-    context.drawImage(foot.image, foot.x, foot.y, size, size);
+    context.translate(foot.x, foot.y);
+
+    context.translate(halfSize, halfSize);
+
+    context.rotate(foot.degrees * Math.PI / 180);
+
+    context.drawImage(foot.image, -halfSize, -halfSize, size, size);
 
     context.restore();
   }
@@ -225,6 +235,10 @@ $(function() {
   }
 
   function footSizeDelta() {
+    return (Math.random() - 0.5) * 30;
+  }
+
+  function footDegreesDelta() {
     return (Math.random() - 0.5) * 30;
   }
 
